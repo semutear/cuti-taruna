@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="indigo">#4F46E5</color>
+    <color name="indigo_dark">#3730A3</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bg">#F3F4F6</color>
+    <color name="pending">#F59E0B</color>
+    <color name="disetujui">#10B981</color>
+    <color name="ditolak">#EF4444</color>
+    <color name="text">#111827</color>
+    <color name="muted">#6B7280</color>
+</resources>

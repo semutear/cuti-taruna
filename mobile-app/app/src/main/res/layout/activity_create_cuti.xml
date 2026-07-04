@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alamat Cuti"
+            android:textColor="@color/text"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <EditText android:id="@+id/etJalan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Jalan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
+        <EditText android:id="@+id/etRtRw" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="RT/RW" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
+        <EditText android:id="@+id/etKelurahan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kelurahan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
+        <EditText android:id="@+id/etKecamatan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kecamatan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
+        <EditText android:id="@+id/etKota" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kota" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
+        <EditText android:id="@+id/etProvinsi" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Provinsi" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transportasi (tanpa tiket)"
+            android:textColor="@color/text"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spTransportasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tujuan: Orang Tua"
+            android:textColor="@color/muted"
+            android:textSize="12sp"
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ajukan Cuti"
+            android:backgroundTint="@color/indigo"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>
