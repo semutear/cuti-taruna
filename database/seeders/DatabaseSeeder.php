@@ -13,35 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Buat admin
+        // Hanya membuat akun ADMIN, karena admin tidak memiliki alur registrasi
+        // (tidak ada endpoint /register untuk admin). Taruna & Orang Tua sengaja
+        // TIDAK di-seed: taruna mendaftar sendiri via /register, dan akun orang tua
+        // dibuat otomatis saat login pertama berdasarkan data anaknya.
         User::create([
             'nama_lengkap' => 'Administrator',
             'password' => Hash::make('admin123'),
             'role' => 'admin',
-            // npm, nama_ibu, tanggal_lahir_anak tidak diisi karena untuk admin
         ]);
-
-        // Taruna contoh
-User::create([
-    'nama_lengkap' => 'Jihan Safirah',
-    'npm' => '20032005',
-    'password' => Hash::make('jihansafirah'),
-    'role' => 'taruna',
-    'nama_ibu' => 'mama jihan',
-    'tanggal_lahir' => '2003-03-20',
-]);
-
-// Orang tua tidak perlu diisi manual, akan dibuat saat login pertama
-
-        // Buat orang tua contoh
-        User::create([
-            'nama_lengkap' => 'mama jihan', // nama ibu
-            'password' => Hash::make('mama123'),
-            'role' => 'orang_tua',
-            'nama_ibu' => 'mama jihan', // diisi sama dengan nama_lengkap untuk memudahkan
-            'tanggal_lahir_anak' => '2003-03-20', // contoh tanggal lahir anak (taruna)
-        ]);
-
-        // Bisa tambahkan data lain jika perlu
     }
 }
