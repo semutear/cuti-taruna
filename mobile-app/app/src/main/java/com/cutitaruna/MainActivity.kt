@@ -2,8 +2,6 @@ package com.cutitaruna
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,16 +22,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "Daftar Cuti"
-        supportActionBar?.subtitle = TokenStore.nama(this)
+        binding.tvName.text = TokenStore.nama(this)
 
         binding.rvCuti.layoutManager = LinearLayoutManager(this)
         binding.rvCuti.adapter = adapter
 
+        binding.swipe.setColorSchemeColors(0xFF667EEA.toInt())
         binding.swipe.setOnRefreshListener { loadCuti() }
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, CreateCutiActivity::class.java))
         }
+        binding.btnLogout.setOnClickListener { logout() }
     }
 
     override fun onResume() {
@@ -61,16 +60,6 @@ class MainActivity : AppCompatActivity() {
                 binding.swipe.isRefreshing = false
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add(0, 1, 0, "Logout").setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == 1) { logout(); return true }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun logout() {

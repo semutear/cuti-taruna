@@ -23,18 +23,13 @@ class CreateCutiActivity : AppCompatActivity() {
         binding = ActivityCreateCutiBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.title = "Ajukan Cuti"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.btnBack.setOnClickListener { finish() }
 
         binding.spTransportasi.adapter = ArrayAdapter(
             this, android.R.layout.simple_spinner_dropdown_item, transportasiOptions
         )
 
         binding.btnSubmit.setOnClickListener { submit() }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        finish(); return true
     }
 
     private fun submit() {

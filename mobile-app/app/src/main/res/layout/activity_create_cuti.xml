@@ -1,60 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg">
+    android:orientation="vertical">
 
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@color/text_light"
+            android:textSize="24sp"
+            android:paddingHorizontal="8dp"
+            android:clickable="true"
+            android:focusable="true" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Alamat Cuti"
-            android:textColor="@color/text"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <EditText android:id="@+id/etJalan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Jalan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
-        <EditText android:id="@+id/etRtRw" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="RT/RW" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
-        <EditText android:id="@+id/etKelurahan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kelurahan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
-        <EditText android:id="@+id/etKecamatan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kecamatan" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
-        <EditText android:id="@+id/etKota" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kota" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="8dp" />
-        <EditText android:id="@+id/etProvinsi" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Provinsi" android:background="@color/white" android:padding="12dp" android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Transportasi (tanpa tiket)"
-            android:textColor="@color/text"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <Spinner
-            android:id="@+id/spTransportasi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="8dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tujuan: Orang Tua"
-            android:textColor="@color/muted"
-            android:textSize="12sp"
-            android:layout_marginBottom="20dp" />
-
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ajukan Cuti"
-            android:backgroundTint="@color/indigo"
-            android:textColor="@color/white" />
+            android:textColor="@color/text_light"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
-</ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:layout_margin="16dp"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alamat Cuti"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <EditText android:id="@+id/etJalan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Jalan" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" />
+            <EditText android:id="@+id/etRtRw" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="RT/RW" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" />
+            <EditText android:id="@+id/etKelurahan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kelurahan" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" />
+            <EditText android:id="@+id/etKecamatan" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kecamatan" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" />
+            <EditText android:id="@+id/etKota" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Kota" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" />
+            <EditText android:id="@+id/etProvinsi" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Provinsi" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transportasi (tanpa tiket)"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spTransportasi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_input"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tujuan: Orang Tua"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:layout_marginBottom="22dp" />
+
+            <TextView
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button"
+                android:text="Ajukan Cuti"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

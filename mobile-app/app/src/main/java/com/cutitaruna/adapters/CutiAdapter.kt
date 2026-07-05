@@ -1,5 +1,6 @@
 package com.cutitaruna.adapters
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -34,7 +35,7 @@ class CutiAdapter(private var items: List<Cuti>) :
             "ditolak" -> Color.parseColor("#EF4444")
             else -> Color.parseColor("#F59E0B")
         }
-        b.tvStatus.setBackgroundColor(color)
+        b.tvStatus.backgroundTintList = ColorStateList.valueOf(color)
     }
 
     override fun getItemCount() = items.size

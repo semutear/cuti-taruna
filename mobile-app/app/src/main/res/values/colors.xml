@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="indigo">#4F46E5</color>
-    <color name="indigo_dark">#3730A3</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="bg">#F3F4F6</color>
+    <!-- Gradient latar (meniru web: #0f0c29 -> #302b63 -> #24243e) -->
+    <color name="grad_top">#0F0C29</color>
+    <color name="grad_mid">#302B63</color>
+    <color name="grad_bottom">#24243E</color>
+
+    <!-- Aksen indigo->ungu (tombol web #667eea -> #764ba2) -->
+    <color name="accent_indigo">#667EEA</color>
+    <color name="accent_purple">#764BA2</color>
+
+    <!-- Glassmorphism -->
+    <color name="glass">#14FFFFFF</color>
+    <color name="glass_strong">#1FFFFFFF</color>
+    <color name="glass_border">#26FFFFFF</color>
+
+    <!-- Teks -->
+    <color name="text_light">#FFFFFFFF</color>
+    <color name="text_muted">#C7CCE5</color>
+    <color name="hint">#8A90B5</color>
+
+    <!-- Status -->
     <color name="pending">#F59E0B</color>
     <color name="disetujui">#10B981</color>
+    <color name="disetujui_ortu">#3B82F6</color>
     <color name="ditolak">#EF4444</color>
-    <color name="text">#111827</color>
-    <color name="muted">#6B7280</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
