@@ -21,7 +21,7 @@ class CutiController extends Controller
         if ($user->role == 'taruna') {
             // Taruna melihat cuti miliknya sendiri
             $cuti = CutiApplication::where('taruna_id', $user->id)
-                        ->with('taruna')
+                        ->with('taruna', 'approver', 'finalizedBy')
                         ->latest()
                         ->get();
         } elseif ($user->role == 'orang_tua') {
@@ -31,7 +31,7 @@ class CutiController extends Controller
                 'taruna_id' => 'required|exists:users,id'
             ]);
             $cuti = CutiApplication::where('taruna_id', $request->taruna_id)
-                        ->with('taruna', 'approver')
+                        ->with('taruna', 'approver', 'finalizedBy')
                         ->latest()
                         ->get();
         } else {
@@ -55,6 +55,9 @@ class CutiController extends Controller
     }
 
     $validator = Validator::make($request->all(), [
+        // Periode cuti
+        'tanggal_mulai' => 'required|date|after_or_equal:today',
+        'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         // Alamat cuti (komponen)
         'alamat_cuti.jalan' => 'required|string',
         'alamat_cuti.rt_rw' => 'required|string',
@@ -78,6 +81,8 @@ class CutiController extends Controller
 
     $data = [
         'taruna_id' => $user->id,
+        'tanggal_mulai' => $request->tanggal_mulai,
+        'tanggal_selesai' => $request->tanggal_selesai,
         'alamat_cuti' => $request->alamat_cuti,
         'tujuan' => $request->tujuan,
         'transportasi' => $request->transportasi,
@@ -120,7 +125,7 @@ class CutiController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $cuti = CutiApplication::with('taruna', 'approver')->findOrFail($id);
+        $cuti = CutiApplication::with('taruna', 'approver', 'finalizedBy')->findOrFail($id);
 
         // Cek otorisasi: hanya pemilik (taruna) atau orang tua yang berhak
         $user = $request->user();
@@ -194,7 +199,7 @@ class CutiController extends Controller
     }
 
     /**
-     * Menyetujui cuti (oleh orang tua)
+     * Tahap 1: Orang tua menyetujui cuti (pending -> disetujui_ortu)
      */
     public function approve(Request $request, $id)
     {
@@ -215,12 +220,12 @@ class CutiController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Cuti bukan milik anak Anda'], 403);
         }
 
-        // Cek apakah status masih pending
+        // Cek apakah status masih pending (tahap 1 belum diproses)
         if ($cuti->status != 'pending') {
             return response()->json(['status' => 'error', 'message' => 'Cuti sudah diproses sebelumnya'], 400);
         }
 
-        $cuti->status = 'disetujui';
+        $cuti->status = 'disetujui_ortu';
         $cuti->approved_by_orangtua = $user->id;
         $cuti->approved_at = now();
         $cuti->save();
@@ -232,32 +237,68 @@ class CutiController extends Controller
     }
 
     /**
-     * Menolak cuti (oleh orang tua)
+     * Tahap 2: Pengasuh/admin memfinalisasi cuti (disetujui_ortu -> disetujui)
+     */
+    public function finalize(Request $request, $id)
+    {
+        $cuti = CutiApplication::findOrFail($id);
+        $user = $request->user();
+
+        if ($user->role != 'admin') {
+            return response()->json(['status' => 'error', 'message' => 'Hanya pengasuh/admin yang dapat memfinalisasi'], 403);
+        }
+
+        if ($cuti->status != 'disetujui_ortu') {
+            return response()->json(['status' => 'error', 'message' => 'Cuti belum disetujui orang tua, tidak bisa difinalisasi'], 400);
+        }
+
+        $cuti->status = 'disetujui';
+        $cuti->finalized_by_pengasuh = $user->id;
+        $cuti->finalized_at = now();
+        $cuti->save();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $cuti
+        ]);
+    }
+
+    /**
+     * Menolak cuti. Orang tua bisa menolak di tahap 1 (pending),
+     * pengasuh/admin bisa menolak di tahap 2 (disetujui_ortu).
      */
     public function reject(Request $request, $id)
     {
         $cuti = CutiApplication::findOrFail($id);
         $user = $request->user();
 
-        if ($user->role != 'orang_tua') {
-            return response()->json(['status' => 'error', 'message' => 'Hanya orang tua yang dapat menolak'], 403);
-        }
+        if ($user->role == 'orang_tua') {
+            $request->validate([
+                'taruna_id' => 'required|exists:users,id'
+            ]);
 
-        $request->validate([
-            'taruna_id' => 'required|exists:users,id'
-        ]);
+            if ($cuti->taruna_id != $request->taruna_id) {
+                return response()->json(['status' => 'error', 'message' => 'Cuti bukan milik anak Anda'], 403);
+            }
 
-        if ($cuti->taruna_id != $request->taruna_id) {
-            return response()->json(['status' => 'error', 'message' => 'Cuti bukan milik anak Anda'], 403);
-        }
+            if ($cuti->status != 'pending') {
+                return response()->json(['status' => 'error', 'message' => 'Cuti sudah diproses sebelumnya'], 400);
+            }
 
-        if ($cuti->status != 'pending') {
-            return response()->json(['status' => 'error', 'message' => 'Cuti sudah diproses sebelumnya'], 400);
+            $cuti->approved_by_orangtua = $user->id;
+            $cuti->approved_at = now();
+        } elseif ($user->role == 'admin') {
+            if ($cuti->status != 'disetujui_ortu') {
+                return response()->json(['status' => 'error', 'message' => 'Cuti belum disetujui orang tua'], 400);
+            }
+
+            $cuti->finalized_by_pengasuh = $user->id;
+            $cuti->finalized_at = now();
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
 
         $cuti->status = 'ditolak';
-        $cuti->approved_by_orangtua = $user->id;
-        $cuti->approved_at = now();
         $cuti->save();
 
         return response()->json([

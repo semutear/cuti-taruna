@@ -20,8 +20,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Cuti (resource controller)
     Route::apiResource('cuti', CutiController::class)->except(['create', 'edit']);
 
-    // Route khusus untuk approve/reject (tambahan)
+    // Route khusus untuk approval dua tahap: orang tua (approve/reject), pengasuh (finalize/reject)
     Route::post('/cuti/{id}/approve', [CutiController::class, 'approve']);
+    Route::post('/cuti/{id}/finalize', [CutiController::class, 'finalize']);
     Route::post('/cuti/{id}/reject', [CutiController::class, 'reject']);
 
     // Route admin

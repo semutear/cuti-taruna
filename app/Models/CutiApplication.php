@@ -25,14 +25,21 @@ class CutiApplication extends Model
     'nomor_kerabat',
     'transportasi',
     'tiket_path',
+    'tanggal_mulai',
+    'tanggal_selesai',
     'status',
     'approved_by_orangtua',
     'approved_at',
+    'finalized_by_pengasuh',
+    'finalized_at',
 ];
 
 protected $casts = [
     'alamat_cuti' => 'array', // otomatis decode/encode JSON
+    'tanggal_mulai' => 'date',
+    'tanggal_selesai' => 'date',
     'approved_at' => 'datetime',
+    'finalized_at' => 'datetime',
 ];
 
     // Relasi ke taruna (pengguna dengan role taruna)
@@ -41,9 +48,15 @@ protected $casts = [
         return $this->belongsTo(User::class, 'taruna_id');
     }
 
-    // Relasi ke orang tua yang menyetujui
+    // Relasi ke orang tua yang menyetujui (tahap 1)
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by_orangtua');
+    }
+
+    // Relasi ke pengasuh/admin yang memfinalisasi (tahap 2)
+    public function finalizedBy()
+    {
+        return $this->belongsTo(User::class, 'finalized_by_pengasuh');
     }
 }
