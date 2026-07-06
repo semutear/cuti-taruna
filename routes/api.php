@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AdminController;
 
 // Route publik (tanpa autentikasi)
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/orangtua', [AuthController::class, 'registerOrangTua']);
 Route::post('/login/taruna', [AuthController::class, 'loginTaruna']);
 Route::post('/login/orangtua', [AuthController::class, 'loginOrangTua']);
 Route::post('/login/admin', [AuthController::class, 'loginAdmin']);
