@@ -12,7 +12,7 @@ class RegisterTest extends TestCase
         $response = $this->postJson('/api/register', [
             'nama_lengkap' => 'Budi Santoso',
             'npm' => '20241234',
-            'password' => 'password',
+            'password' => 'password123',
             'nama_ibu' => 'Siti Aminah',
             'tanggal_lahir' => '2005-01-01',
         ]);
@@ -35,7 +35,7 @@ class RegisterTest extends TestCase
         $response = $this->postJson('/api/register', [
             'nama_lengkap' => 'Budi Santoso',
             'npm' => '20241234',
-            'password' => 'password',
+            'password' => 'password123',
             'nama_ibu' => 'Siti Aminah',
             'tanggal_lahir' => '2005-01-01',
         ]);
