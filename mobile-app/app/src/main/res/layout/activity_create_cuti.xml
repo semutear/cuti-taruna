@@ -50,6 +50,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Periode Cuti"
+                android:textColor="@color/text_light"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <EditText android:id="@+id/etTanggalMulai" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tanggal Mulai (yyyy-mm-dd)" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="10dp" android:focusable="false" android:clickable="true" />
+            <EditText android:id="@+id/etTanggalSelesai" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tanggal Selesai (yyyy-mm-dd)" android:background="@drawable/bg_input" android:textColor="@color/text_light" android:textColorHint="@color/hint" android:padding="14dp" android:layout_marginBottom="18dp" android:focusable="false" android:clickable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Alamat Cuti"
                 android:textColor="@color/text_light"
                 android:textStyle="bold"
