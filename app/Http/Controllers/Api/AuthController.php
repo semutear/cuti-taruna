@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -16,7 +17,7 @@ class AuthController extends Controller
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'npm' => 'required|string|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => ['required', 'string', Password::min(8)->letters()->numbers()],
             'nama_ibu' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
         ]);
