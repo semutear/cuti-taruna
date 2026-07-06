@@ -353,22 +353,22 @@
                     <!-- Orang Tua Fields -->
                     <div id="orangTuaFields" class="role-fields hidden space-y-4">
                         <div class="input-group" data-aos="fade-up" data-aos-delay="400">
-                            <i class="fas fa-female input-icon"></i>
-                            <input type="text" id="nama_ibu" class="input-field" placeholder="Nama Ibu">
+                            <i class="fas fa-at input-icon"></i>
+                            <input type="text" id="username_ortu" class="input-field" placeholder="Username">
                         </div>
                         <div class="input-group" data-aos="fade-up" data-aos-delay="500">
-                            <i class="fas fa-child input-icon"></i>
-                            <input type="text" id="nama_anak" class="input-field" placeholder="Nama Anak">
-                        </div>
-                        <div class="input-group" data-aos="fade-up" data-aos-delay="600">
-                            <i class="fas fa-calendar input-icon"></i>
-                            <input type="date" id="tanggal_lahir_anak" class="input-field">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password_ortu" class="input-field" placeholder="Password">
                         </div>
                     </div>
 
                     <!-- Admin Fields -->
                     <div id="adminFields" class="role-fields hidden">
                         <div class="input-group" data-aos="fade-up" data-aos-delay="400">
+                            <i class="fas fa-user-shield input-icon"></i>
+                            <input type="text" id="username_admin" class="input-field" placeholder="Username Admin">
+                        </div>
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="500">
                             <i class="fas fa-lock input-icon"></i>
                             <input type="password" id="password_admin" class="input-field" placeholder="Password Admin">
                         </div>
@@ -384,7 +384,7 @@
                 <!-- Footer -->
                 <div class="mt-8 text-center" data-aos="fade-up" data-aos-delay="800">
                     <p class="text-gray-300">
-                        Belum punya akun taruna?
+                        Belum punya akun?
                         <a href="register.html" class="text-indigo-300 hover:text-indigo-200 font-semibold transition hover:underline">
                             Daftar di sini
                         </a>
@@ -466,10 +466,10 @@
                 document.getElementById('npm').required = true;
                 document.getElementById('password').required = true;
             } else if (role === 'orang_tua') {
-                document.getElementById('nama_ibu').required = true;
-                document.getElementById('nama_anak').required = true;
-                document.getElementById('tanggal_lahir_anak').required = true;
+                document.getElementById('username_ortu').required = true;
+                document.getElementById('password_ortu').required = true;
             } else if (role === 'admin') {
+                document.getElementById('username_admin').required = true;
                 document.getElementById('password_admin').required = true;
             }
         }
@@ -504,13 +504,13 @@
             } else if (role === 'orang_tua') {
                 endpoint = '/login/orangtua';
                 body = {
-                    nama_ibu: document.getElementById('nama_ibu').value,
-                    nama_anak: document.getElementById('nama_anak').value,
-                    tanggal_lahir_anak: document.getElementById('tanggal_lahir_anak').value
+                    username: document.getElementById('username_ortu').value,
+                    password: document.getElementById('password_ortu').value
                 };
             } else if (role === 'admin') {
                 endpoint = '/login/admin';
                 body = {
+                    username: document.getElementById('username_admin').value,
                     password: document.getElementById('password_admin').value
                 };
             }

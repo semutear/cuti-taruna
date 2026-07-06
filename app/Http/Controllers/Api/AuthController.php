@@ -119,43 +119,21 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // Login untuk orang tua
+    // Login untuk orang tua (SR-12: username+password, akun tidak lagi auto-create)
     public function loginOrangTua(Request $request)
     {
         $request->validate([
-            'nama_ibu' => 'required|string',
-            'nama_anak' => 'required|string',
-            'tanggal_lahir_anak' => 'required|date',
+            'username' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        // 1. Cari data Taruna (Anak) dulu untuk validasi hubungan
-        $taruna = User::where('role', 'taruna')
-                    ->where('nama_ibu', $request->nama_ibu)
-                    ->where('nama_lengkap', $request->nama_anak)
-                    ->where('tanggal_lahir', $request->tanggal_lahir_anak)
+        $orangTua = User::where('username', $request->username)
+                    ->where('role', 'orang_tua')
                     ->first();
 
-        if (!$taruna) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data taruna tidak ditemukan atau data orang tua tidak cocok.'
-            ], 404);
-        }
-
-        // 2. Cari atau buat user Orang Tua berdasarkan child_id
-        // Asumsi: Anda punya kolom 'child_id' di tabel users
-        $orangTua = User::where('role', 'orang_tua')
-                        ->where('child_id', $taruna->id)
-                        ->first();
-
-        if (!$orangTua) {
-            $orangTua = User::create([
-                'nama_lengkap' => $request->nama_ibu,
-                'password' => Hash::make(uniqid()), // Password random karena login via data anak
-                'role' => 'orang_tua',
-                'nama_ibu' => $request->nama_ibu,
-                'tanggal_lahir_anak' => $request->tanggal_lahir_anak,
-                'child_id' => $taruna->id,
+        if (!$orangTua || !Hash::check($request->password, $orangTua->password)) {
+            throw ValidationException::withMessages([
+                'username' => ['Username atau password salah.'],
             ]);
         }
 
@@ -166,24 +144,27 @@ class AuthController extends Controller
             'data' => [
                 'user' => $orangTua,
                 'token' => $token,
-                'anak' => $taruna
+                'anak' => $orangTua->child,
             ]
         ]);
     }
 
-    // Login untuk admin
+    // Login untuk admin (SR-11: username+password, bukan password tunggal)
     public function loginAdmin(Request $request)
     {
         $request->validate([
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $admin = User::where('role', 'admin')->first();
+        $admin = User::where('username', $request->username)
+                    ->where('role', 'admin')
+                    ->first();
 
         if (!$admin || !Hash::check($request->password, $admin->password)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Password admin salah'
+                'message' => 'Username atau password admin salah'
             ], 401);
         }
 
