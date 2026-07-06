@@ -1,5 +1,6 @@
 package com.cutitaruna
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -10,10 +11,14 @@ import com.cutitaruna.models.AlamatCuti
 import com.cutitaruna.models.CreateCutiRequest
 import com.cutitaruna.network.RetrofitClient
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class CreateCutiActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateCutiBinding
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // Transportasi tanpa tiket agar tidak perlu unggah file
     private val transportasiOptions = listOf("pribadi", "ojol")
@@ -29,10 +34,40 @@ class CreateCutiActivity : AppCompatActivity() {
             this, android.R.layout.simple_spinner_dropdown_item, transportasiOptions
         )
 
+        binding.etTanggalMulai.setOnClickListener { pickDate(binding.etTanggalMulai) }
+        binding.etTanggalSelesai.setOnClickListener { pickDate(binding.etTanggalSelesai) }
+
         binding.btnSubmit.setOnClickListener { submit() }
     }
 
+    private fun pickDate(target: android.widget.EditText) {
+        val cal = Calendar.getInstance()
+        DatePickerDialog(this, { _, year, month, day ->
+            cal.set(year, month, day)
+            target.setText(dateFormat.format(cal.time))
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
     private fun submit() {
+        val tanggalMulai = binding.etTanggalMulai.text.toString().trim()
+        val tanggalSelesai = binding.etTanggalSelesai.text.toString().trim()
+
+        if (tanggalMulai.isEmpty() || tanggalSelesai.isEmpty()) {
+            Toast.makeText(this, "Tanggal mulai dan selesai wajib diisi", Toast.LENGTH_SHORT).show()
+            return
+        }
+        try {
+            val mulai = dateFormat.parse(tanggalMulai)
+            val selesai = dateFormat.parse(tanggalSelesai)
+            if (mulai != null && selesai != null && selesai.before(mulai)) {
+                Toast.makeText(this, "Tanggal selesai harus setelah tanggal mulai", Toast.LENGTH_SHORT).show()
+                return
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Format tanggal tidak valid", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val alamat = AlamatCuti(
             jalan = binding.etJalan.text.toString().trim(),
             rt_rw = binding.etRtRw.text.toString().trim(),
@@ -49,7 +84,9 @@ class CreateCutiActivity : AppCompatActivity() {
         val req = CreateCutiRequest(
             alamat_cuti = alamat,
             tujuan = "orang_tua",
-            transportasi = transportasi
+            transportasi = transportasi,
+            tanggal_mulai = tanggalMulai,
+            tanggal_selesai = tanggalSelesai
         )
         binding.btnSubmit.isEnabled = false
         lifecycleScope.launch {
