@@ -71,6 +71,54 @@ class AuthController extends Controller
         ]);
     }
 
+    // Registrasi akun Orang Tua, terhubung ke taruna lewat NPM anak
+    public function registerOrangTua(Request $request)
+    {
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:6|confirmed',
+            'npm_anak' => 'required|string',
+        ]);
+
+        $anak = User::where('npm', $request->npm_anak)
+                    ->where('role', 'taruna')
+                    ->first();
+
+        if (!$anak) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'NPM taruna tidak ditemukan.'
+            ], 404);
+        }
+
+        if (User::where('role', 'orang_tua')->where('child_id', $anak->id)->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akun orang tua untuk taruna ini sudah terdaftar.'
+            ], 422);
+        }
+
+        $orangTua = User::create([
+            'nama_lengkap' => $request->nama_lengkap,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role' => 'orang_tua',
+            'child_id' => $anak->id,
+        ]);
+
+        $token = $orangTua->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'user' => $orangTua,
+                'token' => $token,
+                'anak' => $anak,
+            ]
+        ], 201);
+    }
+
     // Login untuk orang tua
     public function loginOrangTua(Request $request)
     {

@@ -302,8 +302,18 @@
                 <!-- Header -->
                 <div class="text-center mb-6" data-aos="fade-down" data-aos-delay="200">
                     <img src="assets/images/logo-poltekssn.png" alt="Logo Poltek SSN" class="h-14 w-auto mx-auto mb-4">
-                    <h2 class="text-3xl font-bold text-white mb-2">Daftar Taruna</h2>
-                    <p class="text-gray-300">Buat akun baru untuk mengajukan cuti</p>
+                    <h2 id="formTitle" class="text-3xl font-bold text-white mb-2">Daftar Taruna</h2>
+                    <p id="formSubtitle" class="text-gray-300">Buat akun baru untuk mengajukan cuti</p>
+                </div>
+
+                <!-- Role Toggle -->
+                <div class="grid grid-cols-2 gap-2 mb-6" data-aos="fade-up" data-aos-delay="250">
+                    <button type="button" id="tabTaruna" class="py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white transition">
+                        Taruna
+                    </button>
+                    <button type="button" id="tabOrangTua" class="py-2 rounded-lg text-sm font-semibold bg-white/10 text-gray-300 hover:bg-white/20 transition">
+                        Orang Tua
+                    </button>
                 </div>
 
                 <!-- Alert Message -->
@@ -311,28 +321,46 @@
 
                 <!-- Register Form -->
                 <form id="registerForm" class="space-y-4">
-                    <!-- Nama Lengkap -->
+                    <!-- Nama Lengkap (kedua role) -->
                     <div class="input-group" data-aos="fade-up" data-aos-delay="300">
                         <i class="fas fa-user input-icon"></i>
                         <input type="text" id="nama_lengkap" class="input-field" placeholder="Nama Lengkap" required>
                     </div>
 
-                    <!-- NPM -->
-                    <div class="input-group" data-aos="fade-up" data-aos-delay="350">
-                        <i class="fas fa-id-card input-icon"></i>
-                        <input type="text" id="npm" class="input-field" placeholder="NPM" required>
+                    <!-- Field khusus Taruna -->
+                    <div id="tarunaFields">
+                        <!-- NPM -->
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="350">
+                            <i class="fas fa-id-card input-icon"></i>
+                            <input type="text" id="npm" class="input-field" placeholder="NPM" required>
+                        </div>
+
+                        <!-- Nama Ibu -->
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="400">
+                            <i class="fas fa-female input-icon"></i>
+                            <input type="text" id="nama_ibu" class="input-field" placeholder="Nama Ibu" required>
+                        </div>
+
+                        <!-- Tanggal Lahir -->
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="450">
+                            <i class="fas fa-calendar input-icon"></i>
+                            <input type="date" id="tanggal_lahir" class="input-field" required>
+                        </div>
                     </div>
 
-                    <!-- Nama Ibu -->
-                    <div class="input-group" data-aos="fade-up" data-aos-delay="400">
-                        <i class="fas fa-female input-icon"></i>
-                        <input type="text" id="nama_ibu" class="input-field" placeholder="Nama Ibu" required>
-                    </div>
+                    <!-- Field khusus Orang Tua -->
+                    <div id="orangTuaFields" class="hidden">
+                        <!-- Username -->
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="350">
+                            <i class="fas fa-at input-icon"></i>
+                            <input type="text" id="username" class="input-field" placeholder="Username">
+                        </div>
 
-                    <!-- Tanggal Lahir -->
-                    <div class="input-group" data-aos="fade-up" data-aos-delay="450">
-                        <i class="fas fa-calendar input-icon"></i>
-                        <input type="date" id="tanggal_lahir" class="input-field" required>
+                        <!-- NPM Anak -->
+                        <div class="input-group" data-aos="fade-up" data-aos-delay="400">
+                            <i class="fas fa-child input-icon"></i>
+                            <input type="text" id="npm_anak" class="input-field" placeholder="NPM Anak (Taruna)">
+                        </div>
                     </div>
 
                     <!-- Password -->
@@ -428,6 +456,50 @@
             }
         }
         createParticles();
+
+        // Role toggle (Taruna / Orang Tua)
+        let selectedRole = 'taruna';
+        const tabTaruna = document.getElementById('tabTaruna');
+        const tabOrangTua = document.getElementById('tabOrangTua');
+        const tarunaFields = document.getElementById('tarunaFields');
+        const orangTuaFields = document.getElementById('orangTuaFields');
+        const formTitle = document.getElementById('formTitle');
+        const formSubtitle = document.getElementById('formSubtitle');
+
+        function setActiveTab(button, other) {
+            button.classList.add('bg-indigo-600', 'text-white');
+            button.classList.remove('bg-white/10', 'text-gray-300');
+            other.classList.remove('bg-indigo-600', 'text-white');
+            other.classList.add('bg-white/10', 'text-gray-300');
+        }
+
+        tabTaruna.addEventListener('click', function() {
+            selectedRole = 'taruna';
+            setActiveTab(tabTaruna, tabOrangTua);
+            tarunaFields.classList.remove('hidden');
+            orangTuaFields.classList.add('hidden');
+            document.getElementById('npm').required = true;
+            document.getElementById('nama_ibu').required = true;
+            document.getElementById('tanggal_lahir').required = true;
+            document.getElementById('username').required = false;
+            document.getElementById('npm_anak').required = false;
+            formTitle.textContent = 'Daftar Taruna';
+            formSubtitle.textContent = 'Buat akun baru untuk mengajukan cuti';
+        });
+
+        tabOrangTua.addEventListener('click', function() {
+            selectedRole = 'orang_tua';
+            setActiveTab(tabOrangTua, tabTaruna);
+            orangTuaFields.classList.remove('hidden');
+            tarunaFields.classList.add('hidden');
+            document.getElementById('npm').required = false;
+            document.getElementById('nama_ibu').required = false;
+            document.getElementById('tanggal_lahir').required = false;
+            document.getElementById('username').required = true;
+            document.getElementById('npm_anak').required = true;
+            formTitle.textContent = 'Daftar Orang Tua';
+            formSubtitle.textContent = 'Buat akun untuk memantau & menyetujui cuti anak';
+        });
 
         // Password strength checker
         const passwordInput = document.getElementById('password');
@@ -534,7 +606,8 @@
             btnSpinner.classList.remove('hidden');
             submitBtn.disabled = true;
 
-            const body = {
+            let endpoint = '/register';
+            let body = {
                 nama_lengkap: document.getElementById('nama_lengkap').value,
                 npm: document.getElementById('npm').value,
                 password: password,
@@ -542,8 +615,19 @@
                 tanggal_lahir: document.getElementById('tanggal_lahir').value
             };
 
+            if (selectedRole === 'orang_tua') {
+                endpoint = '/register/orangtua';
+                body = {
+                    nama_lengkap: document.getElementById('nama_lengkap').value,
+                    username: document.getElementById('username').value,
+                    password: password,
+                    password_confirmation: confirm,
+                    npm_anak: document.getElementById('npm_anak').value
+                };
+            }
+
             try {
-                await apiCall('/register', 'POST', body);
+                await apiCall(endpoint, 'POST', body);
                 showAlert('Pendaftaran berhasil! Mengarahkan ke halaman login...', 'success');
 
                 setTimeout(() => {
