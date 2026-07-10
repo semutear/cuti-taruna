@@ -51,3 +51,31 @@ async function apiCall(endpoint, method = 'GET', body = null, token = null, isFo
         throw error;
     }
 }
+
+// Fungsi global untuk melihat file tiket secara aman
+window.viewTiket = async function(id) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Anda belum masuk. Silakan login terlebih dahulu.');
+        return;
+    }
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/cuti/${id}/tiket`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            alert('Gagal memuat tiket: ' + (errData.message || response.statusText || response.status));
+            return;
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    } catch (e) {
+        console.error('Gagal mengambil tiket:', e);
+        alert('Gagal mengambil file tiket dari server.');
+    }
+};

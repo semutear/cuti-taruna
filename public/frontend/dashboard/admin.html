@@ -218,10 +218,9 @@
                     // Format link tiket
                     let tiketDisplay = '-';
                     if (cuti.tiket_path) {
-                        const baseStorageUrl = CONFIG.API_BASE_URL.replace('/api', '/storage');
-                        tiketDisplay = `<a href="${baseStorageUrl}/${cuti.tiket_path}" target="_blank" class="text-indigo-600 hover:text-indigo-900">
+                        tiketDisplay = `<button onclick="viewTiket(${cuti.id})" class="text-indigo-600 hover:text-indigo-900 focus:outline-none">
                                             <i class="fas fa-file-pdf"></i> Lihat Tiket
-                                        </a>`;
+                                        </button>`;
                     }
 
                     // Aksi hanya tersedia untuk pengasuh saat cuti sudah disetujui orang tua

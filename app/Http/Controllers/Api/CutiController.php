@@ -95,7 +95,7 @@ class CutiController extends Controller
     }
 
     if ($request->hasFile('tiket') && $request->file('tiket')->isValid()) {
-            $path = $request->file('tiket')->store('tiket', 'public');
+            $path = $request->file('tiket')->store('tiket', 'local');
             $data['tiket_path'] = $path;
         }
 
@@ -108,7 +108,7 @@ class CutiController extends Controller
                 'message' => 'Untuk transportasi ini wajib mengunggah tiket.'
             ], 422);
         }
-        $path = $request->file('tiket')->store('tiket', 'public');
+        $path = $request->file('tiket')->store('tiket', 'local');
         $data['tiket_path'] = $path;
     }
 
@@ -211,12 +211,7 @@ class CutiController extends Controller
         }
 
         // Validasi apakah cuti ini milik anak orang tua tersebut
-        // Kita perlu taruna_id yang dikirim dari client
-        $request->validate([
-            'taruna_id' => 'required|exists:users,id'
-        ]);
-
-        if ($cuti->taruna_id != $request->taruna_id) {
+        if ($cuti->taruna_id != $user->child_id) {
             return response()->json(['status' => 'error', 'message' => 'Cuti bukan milik anak Anda'], 403);
         }
 
@@ -273,11 +268,7 @@ class CutiController extends Controller
         $user = $request->user();
 
         if ($user->role == 'orang_tua') {
-            $request->validate([
-                'taruna_id' => 'required|exists:users,id'
-            ]);
-
-            if ($cuti->taruna_id != $request->taruna_id) {
+            if ($cuti->taruna_id != $user->child_id) {
                 return response()->json(['status' => 'error', 'message' => 'Cuti bukan milik anak Anda'], 403);
             }
 
@@ -305,5 +296,39 @@ class CutiController extends Controller
             'status' => 'success',
             'data' => $cuti
         ]);
+    }
+
+    /**
+     * Download or view the ticket file securely.
+     */
+    public function downloadTiket(Request $request, $id)
+    {
+        $cuti = CutiApplication::findOrFail($id);
+        $user = $request->user();
+
+        // Cek otorisasi
+        if ($user->role === 'taruna' && $cuti->taruna_id != $user->id) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        if ($user->role === 'orang_tua' && $cuti->taruna_id != $user->child_id) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        // Admin (role 'admin') diperbolehkan secara default, user lain diblokir
+        if ($user->role !== 'admin' && $user->role !== 'taruna' && $user->role !== 'orang_tua') {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        if (!$cuti->tiket_path) {
+            return response()->json(['status' => 'error', 'message' => 'Tiket tidak ditemukan'], 404);
+        }
+
+        // Gunakan Storage facade untuk menyajikan file secara aman dari disk local
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($cuti->tiket_path)) {
+            return response()->json(['status' => 'error', 'message' => 'File tidak ditemukan di storage'], 404);
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('local')->response($cuti->tiket_path);
     }
 }
